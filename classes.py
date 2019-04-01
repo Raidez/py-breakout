@@ -25,11 +25,19 @@ class Pad(pygame.Rect):
         pygame.draw.rect(screen, self.color, self)
 
 class Ball:
-    def __init__(self, cx, cy, radius, color):
+    def __init__(self, cx, cy, radius, color, vx=1.0, vy=1.0, speed=1.0):
         self.cx = cx
         self.cy = cy
         self.radius = radius
         self.color = color
+        self.vx = vx
+        self.vy = vy
+        self.speed = speed
+
+    def update(self):
+        self.cx += self.vx * self.speed
+        self.cy += self.vy * self.speed
 
     def draw(self, screen):
-        pygame.draw.circle(screen, self.color, (self.cx, self.cy), self.radius)
+        position = (int(self.cx), int(self.cy))
+        pygame.draw.circle(screen, self.color, position, self.radius)
