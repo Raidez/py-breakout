@@ -9,3 +9,12 @@ class Brick:
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, self.pos)
+
+
+class Pad:
+    def __init__(self, x, y, w, h, color):
+        self.pos = pygame.Rect(x, y, w, h)
+        self.color = color
+
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.color, self.pos)
