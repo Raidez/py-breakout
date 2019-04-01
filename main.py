@@ -25,7 +25,7 @@ def update():
         if event.type == QUIT: done = True
         if event.type == KEYDOWN:
             if event.key == K_RIGHT:
-                if pad.x < right_wall.x - 100:
+                if pad.x < right_wall.x - pad.w:
                     pad.x += 5
             if event.key == K_LEFT:
                 if pad.x > left_wall.w:
