@@ -1,5 +1,8 @@
 import pygame
 
+WIDTH = 400
+HEIGHT = 600
+
 BLACK = (0, 0, 0)
 RED = (125, 0, 0)
 WHITE = (255,255,255)
@@ -34,10 +37,30 @@ class Ball:
         self.vy = vy
         self.speed = speed
 
-    def update(self):
+    def update(self, left_wall, top_wall, right_wall, pad):
+        # faire rebondir la balle contre les murs
+        if (self.cx - self.radius) < (left_wall.x + left_wall.w) or (self.cx + self.radius) >= right_wall.x:
+            self.rebound_horizontal()
+        if (self.cy - self.radius) < (top_wall.y + top_wall.h):
+            self.rebound_vertical()
+
+        # DEBUG: a supprimer
+        if self.cy >= 600:
+            self.rebound_vertical()
+
+        # faire rebondir la balle contre la barre
+
+
+        # deplacer la balle a sa nouvelle position
         self.cx += self.vx * self.speed
         self.cy += self.vy * self.speed
 
     def draw(self, screen):
         position = (int(self.cx), int(self.cy))
         pygame.draw.circle(screen, self.color, position, self.radius)
+
+    def rebound_vertical(self):
+        self.vy = -self.vy
+
+    def rebound_horizontal(self):
+        self.vx = -self.vx

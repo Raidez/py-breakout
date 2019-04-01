@@ -2,9 +2,6 @@ import pygame, sys, math
 from pygame.locals import *
 from classes import *
 
-WIDTH = 400
-HEIGHT = 600
-
 pygame.init()
 root = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.key.set_repeat(10, 10)
@@ -33,14 +30,8 @@ def update():
             if event.key == K_UP: ball.speed += 0.2
             if event.key == K_DOWN: ball.speed -= 0.2
 
-    # faire rebondir la balle (murs et barre)
-    if ball.cx >= 400 or ball.cx < 0:
-        ball.vx = -ball.vx
-    if ball.cy < 0 or ball.cy >= 600:
-        ball.vy = -ball.vy
-
     # gestion du mouvement de la balle
-    ball.update()
+    ball.update(left_wall, top_wall, right_wall, pad)
 
 def draw():
     top_wall.draw(root)
