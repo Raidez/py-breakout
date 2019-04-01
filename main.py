@@ -12,7 +12,7 @@ root = pygame.display.set_mode((400, 600))
 
 # definition des objets
 brick = Brick(0, 0, 20, 20, RED, 5)
-pad = Pad(200, 500, 20, 20, BLUE)
+pad = Pad(150, 575, 100, 15, WHITE)
 
 done = False
 while not done:
