@@ -18,3 +18,13 @@ class Pad(pygame.Rect):
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, self)
+
+class Ball:
+    def __init__(self, cx, cy, radius, color):
+        self.cx = cx
+        self.cy = cy
+        self.radius = radius
+        self.color = color
+
+    def draw(self, screen):
+        pygame.draw.circle(screen, self.color, (self.cx, self.cy), self.radius)
