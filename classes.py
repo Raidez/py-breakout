@@ -29,6 +29,7 @@ class Pad(pygame.Rect):
 
 class Ball:
     def __init__(self, cx, cy, radius, color, vx=1.0, vy=1.0, speed=1.0):
+        self.hitbox = pygame.Rect(cx, cy, radius, radius)
         self.cx = cx
         self.cy = cy
         self.radius = radius
@@ -38,22 +39,21 @@ class Ball:
         self.speed = speed
 
     def update(self, left_wall, top_wall, right_wall, pad):
+        # deplacer la balle a sa nouvelle position
+        self.cx += self.vx * self.speed
+        self.cy += self.vy * self.speed
+        self.hitbox.x = int(self.cx)
+        self.hitbox.y = int(self.cy)
+
         # faire rebondir la balle contre les murs
         if (self.cx - self.radius) < (left_wall.x + left_wall.w) or (self.cx + self.radius) >= right_wall.x:
             self.rebound_horizontal()
         if (self.cy - self.radius) < (top_wall.y + top_wall.h):
             self.rebound_vertical()
 
-        # DEBUG: a supprimer
-        if self.cy >= 600:
-            self.rebound_vertical()
-
         # faire rebondir la balle contre la barre
-
-
-        # deplacer la balle a sa nouvelle position
-        self.cx += self.vx * self.speed
-        self.cy += self.vy * self.speed
+        if self.hitbox.colliderect(pad):
+            self.rebound_vertical()
 
     def draw(self, screen):
         position = (int(self.cx), int(self.cy))
