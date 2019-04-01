@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, math
 from pygame.locals import *
 from classes import *
 
@@ -16,7 +16,12 @@ pad = Pad(150, 575, 100, 15, WHITE)
 
 done = False
 while not done:
+    # definition du fond et des contours
     root.fill(BLACK)
+    Brick(0, 0, 10, 600, BLUE, math.inf).draw(root)
+    Brick(390, 0, 10, 600, BLUE, math.inf).draw(root)
+    Brick(0, 0, 400, 10, BLUE, math.inf).draw(root)
+
     for event in pygame.event.get():
         if event.type == QUIT: done = True
         if event.type == KEYDOWN and event.key == K_RIGHT:
