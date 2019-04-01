@@ -4,6 +4,7 @@ from classes import *
 
 BLACK = (0, 0, 0)
 RED = (125, 0, 0)
+WHITE = (255,255,255)
 BLUE = (0, 0, 125)
 
 pygame.init()
