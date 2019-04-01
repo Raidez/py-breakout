@@ -1,5 +1,10 @@
 import pygame
 
+BLACK = (0, 0, 0)
+RED = (125, 0, 0)
+WHITE = (255,255,255)
+BLUE = (0, 0, 125)
+
 class Brick(pygame.Rect):
     def __init__(self, x, y, w, h, color, hp):
         super().__init__(x, y, w, h)

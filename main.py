@@ -2,31 +2,17 @@ import pygame, sys, math
 from pygame.locals import *
 from classes import *
 
-BLACK = (0, 0, 0)
-RED = (125, 0, 0)
-WHITE = (255,255,255)
-BLUE = (0, 0, 125)
-
 pygame.init()
 root = pygame.display.set_mode((400, 600))
 
-# definition des contours
-mur_gauche = Brick(0, 0, 10, 600, BLUE, math.inf)
-mur_droit = Brick(390, 0, 10, 600, BLUE, math.inf)
-mur_haut = Brick(0, 0, 400, 10, BLUE, math.inf)
-
 # definition des objets
-brick = Brick(0, 0, 20, 20, RED, 5)
+left_wall = Brick(0, 0, 10, 600, BLUE, math.inf)
+right_wall = Brick(390, 0, 10, 600, BLUE, math.inf)
+top_wall = Brick(0, 0, 400, 10, BLUE, math.inf)
 pad = Pad(150, 575, 100, 15, WHITE)
 
-done = False
-while not done:
-    # mise a jour du fond et des contours
-    root.fill(BLACK)
-    mur_haut.draw(root)
-    mur_droit.draw(root)
-    mur_gauche.draw(root)
-
+def update():
+    global done
     for event in pygame.event.get():
         if event.type == QUIT: done = True
         if event.type == KEYDOWN and event.key == K_RIGHT:
@@ -34,8 +20,17 @@ while not done:
         elif event.type == KEYDOWN and event.key == K_LEFT:
             pad.x -= 5
 
-    brick.draw(root)
+def draw():
+    top_wall.draw(root)
+    right_wall.draw(root)
+    left_wall.draw(root)
     pad.draw(root)
+
+done = False
+while not done:
+    root.fill(BLACK)
+    update()
+    draw()
     pygame.display.update()
 
 pygame.quit()
