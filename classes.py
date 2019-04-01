@@ -7,21 +7,5 @@ class Brick:
         self.hpMax = hp
         self.hp = hp
 
-    @property
-    def x(self):
-        return self.pos.left
-
-    @x.setter
-    def x(self, x):
-        self.pos = self.pos.move(x, self.y)
-
-    @property
-    def y(self):
-        return self.pos.top
-
-    @y.setter
-    def y(self, y):
-        self.pos = self.pos.move(self.x, y)
-
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, self.pos)
