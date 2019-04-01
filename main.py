@@ -8,7 +8,7 @@ RED = (125, 0, 0)
 pygame.init()
 root = pygame.display.set_mode((400, 600))
 
-# définition d'une brique rouge
+# definition d'une brique rouge
 theo = Brick(0, 0, 20, 20, RED, 5)
 
 done = False
