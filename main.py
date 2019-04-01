@@ -2,13 +2,16 @@ import pygame, sys, math
 from pygame.locals import *
 from classes import *
 
+WIDTH = 400
+HEIGHT = 600
+
 pygame.init()
-root = pygame.display.set_mode((400, 600))
+root = pygame.display.set_mode((WIDTH, HEIGHT))
 
 # definition des objets
-left_wall = Brick(0, 0, 10, 600, BLUE, math.inf)
-right_wall = Brick(390, 0, 10, 600, BLUE, math.inf)
-top_wall = Brick(0, 0, 400, 10, BLUE, math.inf)
+left_wall = Brick(0, 0, 10, HEIGHT, BLUE, math.inf)
+right_wall = Brick(WIDTH-10, 0, 10, HEIGHT, BLUE, math.inf)
+top_wall = Brick(0, 0, WIDTH, 10, BLUE, math.inf)
 pad = Pad(150, 575, 100, 15, WHITE)
 
 def update():
