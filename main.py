@@ -14,69 +14,54 @@ top_wall = Brick(0, 0, WIDTH, 10, BLUE, math.inf)
 pad = Pad(150, 575, 100, 15, WHITE)
 ball = Ball(root.get_width() // 2, root.get_height() // 2, 10, WHITE, vy=-1.2, vx=-1.8)
 
-Bricks = []
-NumberRow = 6
-i = 1
-while i <= NumberRow:
+bricks = []
+number_row = 6
+for i in range(1, number_row):
+    # attribution d'une couleur selon le niveau de la brique
+    color = WHITE
+    if number_row + 1 -i == 1:
+        color = GREEN
+    if number_row + 1 -i == 2:
+        color = ORANGE
+    if number_row + 1 -i == 3:
+        color = PINK
+    if number_row + 1 -i == 4:
+        color = YELLOW
+    if number_row + 1 -i == 5:
+        color = BLUE
+    if number_row + 1 -i == 6:
+        color = RED
+
+    # remplissage de briques
     hauteur = 30 * i
-    couleur = WHITE
-    if NumberRow + 1 -i == 1:
-        couleur = GREEN
-        pass
-    if NumberRow + 1 -i == 2:
-        couleur = ORANGE
-        pass
-    if NumberRow + 1 -i == 3:
-        couleur = PINK
-        pass
-    if NumberRow + 1 -i == 4:
-        couleur = YELLOW
-        pass
-    if NumberRow + 1 -i == 5:
-        couleur = BLUE
-        pass
-    if NumberRow + 1 -i == 6:
-        couleur = RED
-        pass
-
-    brick = Brick(30, hauteur, 40, 20, couleur, NumberRow + 1 -i)
-    Bricks.append(brick) 
-    print(brick)
-    brick = Brick(80, hauteur, 40, 20, couleur, NumberRow + 1 -i)
-    Bricks.append(brick)
-    brick = Brick(130, hauteur, 40, 20, couleur, NumberRow + 1 -i)
-    Bricks.append(brick) 
-    brick = Brick(180, hauteur, 40, 20, couleur, NumberRow + 1 -i)
-    Bricks.append(brick) 
-    brick = Brick(230, hauteur, 40, 20, couleur, NumberRow + 1 -i)
-    Bricks.append(brick)
-    brick = Brick(280, hauteur, 40, 20, couleur, NumberRow + 1 -i)
-    Bricks.append(brick)  
-    brick = Brick(330, hauteur, 40, 20, couleur, NumberRow + 1 -i)
-    Bricks.append(brick)  
-    i = i + 1
-    
-    pass
-
-
-
-
+    bricks.append(Brick(30, hauteur, 40, 20, color, number_row + 1 -i))
+    bricks.append(Brick(80, hauteur, 40, 20, color, number_row + 1 -i))
+    bricks.append(Brick(130, hauteur, 40, 20, color, number_row + 1 -i))
+    bricks.append(Brick(180, hauteur, 40, 20, color, number_row + 1 -i))
+    bricks.append(Brick(230, hauteur, 40, 20, color, number_row + 1 -i))
+    bricks.append(Brick(280, hauteur, 40, 20, color, number_row + 1 -i))
+    bricks.append(Brick(330, hauteur, 40, 20, color, number_row + 1 -i))
 
 def update():
-    global done
+    global done, ball
 
     # gestion des evenements (bouger la barre, quitter l'appli)
     for event in pygame.event.get():
         if event.type == QUIT: done = True
         if event.type == KEYDOWN:
-            if event.key == K_RIGHT:
-                if pad.x < right_wall.x - pad.w:
-                    pad.x += 5
-            if event.key == K_LEFT:
-                if pad.x > left_wall.w:
-                    pad.x -= 5
-            if event.key == K_UP: ball.speed += 0.2
-            if event.key == K_DOWN: ball.speed -= 0.2
+            if event.key == K_RIGHT and pad.x < right_wall.x - pad.w:
+                pad.x += 5
+            if event.key == K_LEFT and pad.x > left_wall.w:
+                pad.x -= 5
+
+        #region a supprimer
+            if event.key == K_UP:
+                ball.speed += 0.2
+            if event.key == K_DOWN:
+                ball.speed -= 0.2
+        if event.type == KEYUP and event.key == K_r:
+            ball = Ball(root.get_width() // 2, root.get_height() // 2, 10, WHITE, vy=-1.2, vx=-1.8)
+        #endregion
 
     # gestion du mouvement de la balle
     ball.update(left_wall, top_wall, right_wall, pad)
@@ -85,17 +70,16 @@ def draw():
     top_wall.draw(root)
     right_wall.draw(root)
     left_wall.draw(root)
+
     pad.draw(root)
     ball.draw(root)
-    for brick in Bricks:
+
+    for brick in bricks:
         brick.draw(root)
-    pass
 
 done = False
 while not done:
     root.fill(BLACK)
-
-    pygame.display.update()
     update()
     draw()
     pygame.display.update()
