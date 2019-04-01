@@ -12,15 +12,15 @@ root = pygame.display.set_mode((400, 600))
 theo = Brick(0, 0, 20, 20, RED, 5)
 
 done = False
-while done:
+while not done:
     root.fill(BLACK)
     for event in pygame.event.get():
         if event.type is QUIT: done = True
         if event.type is KEYDOWN:
-            print("move théo")
             theo.x += 5
 
     theo.draw(root)
     pygame.display.flip()
+    # pygame.display.update()
 
 pygame.quit()
