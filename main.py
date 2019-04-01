@@ -7,7 +7,7 @@ HEIGHT = 600
 
 pygame.init()
 root = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.key.set_repeat(25, 30)
+pygame.key.set_repeat(10, 10)
 
 # definition des objets
 left_wall = Brick(0, 0, 10, HEIGHT, BLUE, math.inf)
@@ -20,10 +20,10 @@ def update():
     for event in pygame.event.get():
         if event.type == QUIT: done = True
         if event.type == KEYDOWN and event.key == K_RIGHT:
-            if pad.x < 290:
+            if pad.x < right_wall.x - 100:
                 pad.x += 5
         elif event.type == KEYDOWN and event.key == K_LEFT:
-            if pad.x > 10:
+            if pad.x > left_wall.w:
                 pad.x -= 5
 
 def draw():
