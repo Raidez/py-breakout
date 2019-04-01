@@ -4,9 +4,14 @@ WIDTH = 400
 HEIGHT = 600
 
 BLACK = (0, 0, 0)
-RED = (125, 0, 0)
+RED = (255, 0, 0)
 WHITE = (255,255,255)
-BLUE = (0, 0, 125)
+BLUE = (0, 0, 255)
+GREEN = (0, 255, 0)
+YELLOW = (255,255,0)
+ORANGE = (255,165,0)
+PINK = (255,20,147)
+
 
 class Brick(pygame.Rect):
     def __init__(self, x, y, w, h, color, hp):

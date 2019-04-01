@@ -14,6 +14,54 @@ top_wall = Brick(0, 0, WIDTH, 10, BLUE, math.inf)
 pad = Pad(150, 575, 100, 15, WHITE)
 ball = Ball(root.get_width() // 2, root.get_height() // 2, 10, WHITE, vy=-1.2, vx=-1.8)
 
+Bricks = []
+NumberRow = 6
+i = 1
+while i <= NumberRow:
+    hauteur = 30 * i
+    couleur = WHITE
+    if NumberRow + 1 -i == 1:
+        couleur = GREEN
+        pass
+    if NumberRow + 1 -i == 2:
+        couleur = ORANGE
+        pass
+    if NumberRow + 1 -i == 3:
+        couleur = PINK
+        pass
+    if NumberRow + 1 -i == 4:
+        couleur = YELLOW
+        pass
+    if NumberRow + 1 -i == 5:
+        couleur = BLUE
+        pass
+    if NumberRow + 1 -i == 6:
+        couleur = RED
+        pass
+
+    brick = Brick(30, hauteur, 40, 20, couleur, NumberRow + 1 -i)
+    Bricks.append(brick) 
+    print(brick)
+    brick = Brick(80, hauteur, 40, 20, couleur, NumberRow + 1 -i)
+    Bricks.append(brick)
+    brick = Brick(130, hauteur, 40, 20, couleur, NumberRow + 1 -i)
+    Bricks.append(brick) 
+    brick = Brick(180, hauteur, 40, 20, couleur, NumberRow + 1 -i)
+    Bricks.append(brick) 
+    brick = Brick(230, hauteur, 40, 20, couleur, NumberRow + 1 -i)
+    Bricks.append(brick)
+    brick = Brick(280, hauteur, 40, 20, couleur, NumberRow + 1 -i)
+    Bricks.append(brick)  
+    brick = Brick(330, hauteur, 40, 20, couleur, NumberRow + 1 -i)
+    Bricks.append(brick)  
+    i = i + 1
+    
+    pass
+
+
+
+
+
 def update():
     global done
 
@@ -39,10 +87,15 @@ def draw():
     left_wall.draw(root)
     pad.draw(root)
     ball.draw(root)
+    for brick in Bricks:
+        brick.draw(root)
+    pass
 
 done = False
 while not done:
     root.fill(BLACK)
+
+    pygame.display.update()
     update()
     draw()
     pygame.display.update()
