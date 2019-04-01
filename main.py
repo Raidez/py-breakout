@@ -20,7 +20,7 @@ def update():
     for event in pygame.event.get():
         if event.type == QUIT: done = True
         if event.type == KEYDOWN and event.key == K_RIGHT:
-            if pad.x < right_wall.x - 100:
+            if pad.x < right_wall.x - pad.w:
                 pad.x += 5
         elif event.type == KEYDOWN and event.key == K_LEFT:
             if pad.x > left_wall.w:
