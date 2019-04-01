@@ -10,7 +10,7 @@ BLUE = (0, 0, 125)
 pygame.init()
 root = pygame.display.set_mode((400, 600))
 
-# définition des objets
+# definition des objets
 brick = Brick(0, 0, 20, 20, RED, 5)
 pad = Pad(200, 500, 20, 20, BLUE)
 
