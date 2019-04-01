@@ -1,14 +1,26 @@
 import pygame, sys
 from pygame.locals import *
+from classes import *
+
+BLACK = (0, 0, 0)
+RED = (125, 0, 0)
 
 pygame.init()
 root = pygame.display.set_mode((400, 600))
 
-GAME_LOOP = True
-while GAME_LOOP:
-    events = pygame.event.get()
-    if pygame.event.Event(QUIT) in events:
-        GAME_LOOP = False
-        sys.exit()
+# définition d'une brique rouge
+theo = Brick(0, 0, 20, 20, RED, 5)
 
-    pygame.display.update()
+done = False
+while done:
+    root.fill(BLACK)
+    for event in pygame.event.get():
+        if event.type is QUIT: done = True
+        if event.type is KEYDOWN:
+            print("move théo")
+            theo.x += 5
+
+    theo.draw(root)
+    pygame.display.flip()
+
+pygame.quit()
