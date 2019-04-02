@@ -84,6 +84,13 @@ class WinScene(Scene):
 
         font = pygame.font.Font('freesansbold.ttf', 32)
         self.text = font.render('Winner', True, BLACK, WHITE)
+        self.music = pygame.mixer.Sound("ff_victory.ogg")
+        self.once = True
+
+    def update(self, events):
+        if not pygame.mixer.get_busy() and self.once:
+            self.music.play()
+            self.once = False
 
     def draw(self):
         self.fill(WHITE)
