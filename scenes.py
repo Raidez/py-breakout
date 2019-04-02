@@ -27,7 +27,7 @@ class GameScene(Scene):
         self.top_wall = Brick(0, 0, width, 10, math.inf)
         self.right_wall = Brick(width-10, 0, 10, height, math.inf)
 
-        self.pad = Pad(150, 575, 100, 15, WHITE)
+        self.pad = Pad((WIDTH/2 - 50), HEIGHT - 25, 100, 15, WHITE)
         vx = random.randint(-300, 300) / 100
         vy = random.randint(-300, 300) / 100
         self._ball = Ball(width // 2, height // 2, 10, WHITE, vx=vx, vy=vy)
