@@ -1,12 +1,15 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import pygame, sys, math
 from pygame.locals import *
-from classes import *
+from utils import *
 
 pygame.init()
 root = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.key.set_repeat(10, 10)
 
-# definition des objets
+# définition des objets
 clock = pygame.time.Clock()
 left_wall = Brick(0, 0, 10, HEIGHT, BLUE, math.inf)
 right_wall = Brick(WIDTH-10, 0, 10, HEIGHT, BLUE, math.inf)
@@ -32,20 +35,20 @@ for i in range(1, number_row):
     if number_row + 1 -i == 6:
         color = RED
 
-    # remplissage de briques
-    hauteur = 30 * i
-    bricks.append(Brick(30, hauteur, 40, 20, color, number_row + 1 -i))
-    bricks.append(Brick(80, hauteur, 40, 20, color, number_row + 1 -i))
-    bricks.append(Brick(130, hauteur, 40, 20, color, number_row + 1 -i))
-    bricks.append(Brick(180, hauteur, 40, 20, color, number_row + 1 -i))
-    bricks.append(Brick(230, hauteur, 40, 20, color, number_row + 1 -i))
-    bricks.append(Brick(280, hauteur, 40, 20, color, number_row + 1 -i))
-    bricks.append(Brick(330, hauteur, 40, 20, color, number_row + 1 -i))
+    # remplissage des briques
+    height = 30 * i
+    bricks.append(Brick(30, height, 40, 20, color, number_row + 1 -i))
+    bricks.append(Brick(80, height, 40, 20, color, number_row + 1 -i))
+    bricks.append(Brick(130, height, 40, 20, color, number_row + 1 -i))
+    bricks.append(Brick(180, height, 40, 20, color, number_row + 1 -i))
+    bricks.append(Brick(230, height, 40, 20, color, number_row + 1 -i))
+    bricks.append(Brick(280, height, 40, 20, color, number_row + 1 -i))
+    bricks.append(Brick(330, height, 40, 20, color, number_row + 1 -i))
 
 def update():
     global done, ball
 
-    # gestion des evenements (bouger la barre, quitter l'appli)
+    # gestion des événements (bouger la barre, quitter l'appli)
     for event in pygame.event.get():
         if event.type == QUIT: done = True
         if event.type == KEYDOWN:
@@ -54,7 +57,7 @@ def update():
             if event.key == K_LEFT and pad.x > left_wall.w:
                 pad.x -= 5
 
-        #region a supprimer
+        #region à supprimer
             if event.key == K_UP:
                 ball.speed += 0.2
             if event.key == K_DOWN:
@@ -83,6 +86,6 @@ while not done:
     update()
     draw()
     pygame.display.update()
-    clock.tick(60) # permet de bloquer le framerate a 60 images par secondes
+    clock.tick(60) # permet de bloquer le framerate à 60 images par secondes
 
 pygame.quit()
