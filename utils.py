@@ -15,12 +15,11 @@ YELLOW = (255,255,0)
 ORANGE = (255,165,0)
 PINK = (255,20,147)
 
-DEFAULT_COLORS = (WHITE, GREEN, ORANGE, PINK, YELLOW, BLUE, RED)
+DEFAULT_COLORS = (GREEN, ORANGE, PINK, YELLOW, BLUE, RED)
 
 class Brick(pygame.Rect):
-    def __init__(self, x, y, w, h, color, hp):
+    def __init__(self, x, y, w, h, hp):
         super().__init__(x, y, w, h)
-        self.color = color
         self.hpMax = hp
         self.hp = hp
 
@@ -51,7 +50,7 @@ class Ball:
         self.vx = vx
         self.vy = vy
         self.speed = speed
-    
+
     def update(self, left_wall, top_wall, right_wall, pad):
         # déplacer la balle et sa hitbox à sa nouvelle position
         self.cx += self.vx * self.speed

@@ -11,39 +11,24 @@ pygame.key.set_repeat(10, 10)
 
 # définition des objets
 clock = pygame.time.Clock()
-left_wall = Brick(0, 0, 10, HEIGHT, BLUE, math.inf)
-right_wall = Brick(WIDTH-10, 0, 10, HEIGHT, BLUE, math.inf)
-top_wall = Brick(0, 0, WIDTH, 10, BLUE, math.inf)
+left_wall = Brick(0, 0, 10, HEIGHT, math.inf)
+right_wall = Brick(WIDTH-10, 0, 10, HEIGHT, math.inf)
+top_wall = Brick(0, 0, WIDTH, 10, math.inf)
 pad = Pad(150, 575, 100, 15, WHITE)
 ball = Ball(root.get_width() // 2, root.get_height() // 2, 10, WHITE, vy=-1.2, vx=-1.8)
 
 bricks = []
 number_row = 6
 for i in range(1, number_row):
-    # attribution d'une couleur selon le niveau de la brique
-    color = WHITE
-    if number_row + 1 -i == 1:
-        color = GREEN
-    if number_row + 1 -i == 2:
-        color = ORANGE
-    if number_row + 1 -i == 3:
-        color = PINK
-    if number_row + 1 -i == 4:
-        color = YELLOW
-    if number_row + 1 -i == 5:
-        color = BLUE
-    if number_row + 1 -i == 6:
-        color = RED
-
     # remplissage des briques
     height = 30 * i
-    bricks.append(Brick(30, height, 40, 20, color, number_row + 1 -i))
-    bricks.append(Brick(80, height, 40, 20, color, number_row + 1 -i))
-    bricks.append(Brick(130, height, 40, 20, color, number_row + 1 -i))
-    bricks.append(Brick(180, height, 40, 20, color, number_row + 1 -i))
-    bricks.append(Brick(230, height, 40, 20, color, number_row + 1 -i))
-    bricks.append(Brick(280, height, 40, 20, color, number_row + 1 -i))
-    bricks.append(Brick(330, height, 40, 20, color, number_row + 1 -i))
+    bricks.append(Brick(30, height, 40, 20, number_row + 1 -i))
+    bricks.append(Brick(80, height, 40, 20, number_row + 1 -i))
+    bricks.append(Brick(130, height, 40, 20, number_row + 1 -i))
+    bricks.append(Brick(180, height, 40, 20, number_row + 1 -i))
+    bricks.append(Brick(230, height, 40, 20, number_row + 1 -i))
+    bricks.append(Brick(280, height, 40, 20, number_row + 1 -i))
+    bricks.append(Brick(330, height, 40, 20, number_row + 1 -i))
 
 def update():
     global done, ball, bricks
@@ -56,21 +41,19 @@ def update():
                 pad.x += 5
             if event.key == K_LEFT and pad.x > left_wall.w:
                 pad.x -= 5
-
-        #region à supprimer
             if event.key == K_UP:
                 ball.speed += 0.2
             if event.key == K_DOWN:
                 ball.speed -= 0.2
         if event.type == KEYUP and event.key == K_r:
             ball = Ball(root.get_width() // 2, root.get_height() // 2, 10, WHITE, vy=-1.2, vx=-1.8)
-        #endregion
 
     # gestion du mouvement de la balle
     ball.update(left_wall, top_wall, right_wall, pad)
 
     # on enlève 1 HP à chaque touche
     for index in ball.hitbox.collidelistall(bricks):
+        ball.rebound_vertical()
         brick = bricks[index]
         brick.hp -= 1
 
