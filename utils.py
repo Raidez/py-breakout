@@ -3,7 +3,7 @@
 
 import pygame, math
 
-WIDTH = 1000
+WIDTH = 400
 HEIGHT = 600
 
 BLACK = (0, 0, 0)
