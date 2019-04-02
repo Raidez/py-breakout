@@ -16,6 +16,8 @@ YELLOW = (255,255,0)
 ORANGE = (255,165,0)
 PINK = (255,20,147)
 
+# couleurs par défaut de la coloration selon les PV d'une brique
+# VERT -> 1 PV; ROUGE -> max PV
 DEFAULT_COLORS = (GREEN, ORANGE, PINK, YELLOW, BLUE, RED)
 
 class Brick(pygame.Rect):
@@ -25,6 +27,8 @@ class Brick(pygame.Rect):
         self.hp = hp
 
     def draw(self, screen):
+        """la couleur de la brique dépend de ses points de vie
+        (exception pour les murs)"""
         color = BLACK
         if self.hp == math.inf:
             color = BLUE
@@ -64,10 +68,7 @@ class Ball:
         self.hitbox.x = int(self.cx)
         self.hitbox.y = int(self.cy)
 
-        # faire rebondir la balle contre les murs
-        # if len(self.collide_list((left_wall, right_wall))) > 0:
-        #     self.rebound_horizontal()
-
+        # faire rebondir la contre les murs
         if (self.cx - self.radius) < (left_wall.x + left_wall.w) or (self.cx + self.radius) >= right_wall.x:
             self.rebound_horizontal()
         if (self.cy - self.radius) < (top_wall.y + top_wall.h):

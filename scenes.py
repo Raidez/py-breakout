@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import pygame, math
+import pygame, math, copy
 from utils import *
 from pygame.locals import *
 
 class Scene(pygame.Surface):
+    """ Permet de gérer l'affichage et l'interaction d'éléments dans un seul objet.
+    La fonction 'update' renvoi un boolèen indiquant si le traitement doit s'arrêter"""
     def __init__(self, width, height):
         super().__init__((width, height))
 
@@ -20,18 +22,21 @@ class GameScene(Scene):
     def __init__(self, width, height):
         super().__init__(width, height)
 
+        # création des murs (gauche, haut, droite) pour stopper la balle et la barre
         self.left_wall = Brick(0, 0, 10, height, math.inf)
-        self.right_wall = Brick(width-10, 0, 10, height, math.inf)
         self.top_wall = Brick(0, 0, width, 10, math.inf)
+        self.right_wall = Brick(width-10, 0, 10, height, math.inf)
 
         self.pad = Pad(150, 575, 100, 15, WHITE)
-        self.ball = Ball(width // 2, height // 2, 10, WHITE, vy=-1.2, vx=-1.8)
+        self._ball = Ball(width // 2, height // 2, 10, WHITE, vy=-1.2, vx=-1.8)
+        self.ball = copy.deepcopy(self._ball)
 
+        # génération des briques qui seront visible dans le tableau
         self.bricks = []
         self.bricks = generation_bricks(2)
 
     def update(self, events):
-        # gestion des événements (bouger la barre, quitter l'appli)
+        # gestion des événements (bouger la barre, modifier la vitesse de la balle)
         for event in events:
             if event.type == KEYDOWN:
                 if event.key == K_RIGHT and self.pad.x < self.right_wall.x - self.pad.w:
@@ -43,7 +48,7 @@ class GameScene(Scene):
                 if event.key == K_DOWN:
                     self.ball.speed -= 0.2
             if event.type == KEYUP and event.key == K_r:
-                self.ball = Ball(self.get_width() // 2, self.get_height() // 2, 10, WHITE, vy=-1.2, vx=-1.8)
+                self.ball = copy.deepcopy(self._ball) # reset de la balle
 
         # gestion du mouvement de la balle
         self.ball.update(self.left_wall, self.top_wall, self.right_wall, self.pad)
@@ -84,6 +89,7 @@ class WinScene(Scene):
         self.once = True
 
     def update(self, events):
+        # vérifie si le son n'a pas déjà été joué
         if not pygame.mixer.get_busy() and self.once:
             self.music.play()
             self.once = False
