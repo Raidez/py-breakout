@@ -52,7 +52,7 @@ class Pad(pygame.Rect):
 
 class Ball:
     def __init__(self, cx, cy, radius, color, vx=1.0, vy=1.0, speed=1.0):
-        self.hitbox = pygame.Rect(cx, cy, radius, radius)
+        self.hitbox = pygame.Rect((cx - radius), (cy - radius), radius*2, radius*2)
         self.cx = cx
         self.cy = cy
         self.radius = radius
@@ -65,8 +65,8 @@ class Ball:
         # déplacer la balle et sa hitbox à sa nouvelle position
         self.cx += self.vx * self.speed
         self.cy += self.vy * self.speed
-        self.hitbox.x = int(self.cx)
-        self.hitbox.y = int(self.cy)
+        self.hitbox.x = int(self.cx - self.radius)
+        self.hitbox.y = int(self.cy - self.radius)
 
         # faire rebondir la contre les murs
         if (self.cx - self.radius) < (left_wall.x + left_wall.w) or (self.cx + self.radius) >= right_wall.x:
@@ -81,6 +81,7 @@ class Ball:
     def draw(self, screen):
         position = (int(self.cx), int(self.cy))
         pygame.draw.circle(screen, self.color, position, self.radius)
+        # pygame.draw.rect(screen, BLUE, self.hitbox) # DEBUG: affichage de la hitbox
 
     def rebound_vertical(self):
         self.vy = -self.vy
