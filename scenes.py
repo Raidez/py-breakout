@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import pygame, math, copy
+import pygame, math, copy, random
 from utils import *
 from pygame.locals import *
 
@@ -27,14 +27,11 @@ class GameScene(Scene):
         self.top_wall = Brick(0, 0, width, 10, math.inf)
         self.right_wall = Brick(width-10, 0, 10, height, math.inf)
 
-<<<<<<< HEAD
-        self.pad = Pad(150, 575, 380, 15, WHITE)
-        self.ball = Ball(width // 2, height // 2, 10, WHITE, vy=-1.2, vx=-1.8)
-=======
         self.pad = Pad(150, 575, 100, 15, WHITE)
-        self._ball = Ball(width // 2, height // 2, 10, WHITE, vy=-1.2, vx=-1.8)
+        vx = random.randint(-300, 300) / 100
+        vy = random.randint(-300, 300) / 100
+        self._ball = Ball(width // 2, height // 2, 10, WHITE, vx=vx, vy=vy)
         self.ball = copy.deepcopy(self._ball)
->>>>>>> origin/master
 
         # génération des briques qui seront visible dans le tableau
         self.bricks = []
@@ -63,18 +60,10 @@ class GameScene(Scene):
         cpt = 0
         for index in  listCollide:
             self.ball.rebound_vertical()
-            if index > len(self.bricks) or index < 0:
-                print('erreur index')
-            elif index == len(self.bricks):
-                print('erreur index')
-            else:
-                print(index,' , ', len(self.bricks))
-                brick = self.bricks[index]
-                brick.hp -= 1
-                if brick.hp <= 0:
-                    del self.bricks[index]
-                    del listCollide[cpt]
-            cpt += 1
+            brick = self.bricks[index]
+            brick.hp -= 1
+
+        self.bricks = [brick for brick in self.bricks if brick.hp > 0]
 
         return False
 
