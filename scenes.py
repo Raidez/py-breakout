@@ -24,11 +24,11 @@ class GameScene(Scene):
         self.right_wall = Brick(width-10, 0, 10, height, math.inf)
         self.top_wall = Brick(0, 0, width, 10, math.inf)
 
-        self.pad = Pad(150, 575, 100, 15, WHITE)
+        self.pad = Pad(150, 575, 380, 15, WHITE)
         self.ball = Ball(width // 2, height // 2, 10, WHITE, vy=-1.2, vx=-1.8)
 
         self.bricks = []
-        self.bricks = generation_bricks(2)
+        self.bricks = generation_bricks(12)
 
     def update(self, events):
         # gestion des événements (bouger la barre, quitter l'appli)
@@ -49,13 +49,22 @@ class GameScene(Scene):
         self.ball.update(self.left_wall, self.top_wall, self.right_wall, self.pad)
 
         # on enlève 1 HP à chaque touche
-        for index in self.ball.hitbox.collidelistall(self.bricks):
+        listCollide = self.ball.hitbox.collidelistall(self.bricks)
+        cpt = 0
+        for index in  listCollide:
             self.ball.rebound_vertical()
-            brick = self.bricks[index]
-            brick.hp -= 1
-
-            if brick.hp <= 0:
-                del self.bricks[index]
+            if index > len(self.bricks) or index < 0:
+                print('erreur index')
+            elif index == len(self.bricks):
+                print('erreur index')
+            else:
+                print(index,' , ', len(self.bricks))
+                brick = self.bricks[index]
+                brick.hp -= 1
+                if brick.hp <= 0:
+                    del self.bricks[index]
+                    del listCollide[cpt]
+            cpt += 1
 
         return False
 
