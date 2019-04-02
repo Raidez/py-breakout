@@ -9,6 +9,20 @@ pygame.init()
 root = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.key.set_repeat(10, 10)
 
+# Affichage texte Win
+win = pygame.Surface((WIDTH, HEIGHT))
+pygame.display.set_caption('Winner')
+font = pygame.font.Font('freesansbold.ttf', 32)
+text = font.render('Winner', True, BLACK, WHITE)
+textRect = text.get_rect()
+textRect.center = (WIDTH // 2, HEIGHT // 2)
+
+win.fill(WHITE)
+win.blit(text, textRect)
+
+no_bricks = False
+done = False
+
 # définition des objets
 clock = pygame.time.Clock()
 left_wall = Brick(0, 0, 10, HEIGHT, math.inf)
@@ -18,20 +32,20 @@ pad = Pad(150, 575, 100, 15, WHITE)
 ball = Ball(root.get_width() // 2, root.get_height() // 2, 10, WHITE, vy=-1.2, vx=-1.8)
 
 bricks = []
-number_row = 6
+number_row = 2
 for i in range(1, number_row):
     # remplissage des briques
     height = 30 * i
     bricks.append(Brick(30, height, 40, 20, number_row + 1 -i))
-    bricks.append(Brick(80, height, 40, 20, number_row + 1 -i))
-    bricks.append(Brick(130, height, 40, 20, number_row + 1 -i))
-    bricks.append(Brick(180, height, 40, 20, number_row + 1 -i))
-    bricks.append(Brick(230, height, 40, 20, number_row + 1 -i))
-    bricks.append(Brick(280, height, 40, 20, number_row + 1 -i))
-    bricks.append(Brick(330, height, 40, 20, number_row + 1 -i))
+    # bricks.append(Brick(80, height, 40, 20, number_row + 1 -i))
+    # bricks.append(Brick(130, height, 40, 20, number_row + 1 -i))
+    # bricks.append(Brick(180, height, 40, 20, number_row + 1 -i))
+    # bricks.append(Brick(230, height, 40, 20, number_row + 1 -i))
+    # bricks.append(Brick(280, height, 40, 20, number_row + 1 -i))
+    # bricks.append(Brick(330, height, 40, 20, number_row + 1 -i))
 
 def update():
-    global done, ball, bricks
+    global done, ball, bricks, no_bricks
 
     # gestion des événements (bouger la barre, quitter l'appli)
     for event in pygame.event.get():
@@ -60,8 +74,12 @@ def update():
         if brick.hp <= 0:
             del bricks[index]
 
+    if len(bricks) == 0:
+        no_bricks = True
+
+
 def draw():
-    global bricks
+    global bricks, no_bricks
     top_wall.draw(root)
     right_wall.draw(root)
     left_wall.draw(root)
@@ -72,7 +90,9 @@ def draw():
     for brick in bricks:
         brick.draw(root)
 
-done = False
+    if no_bricks == True:
+        root.blit(win, (0,0))
+
 while not done:
     root.fill(BLACK)
     update()
