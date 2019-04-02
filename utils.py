@@ -3,7 +3,7 @@
 
 import pygame, math
 
-WIDTH = 400
+WIDTH = 1000
 HEIGHT = 600
 
 BLACK = (0, 0, 0)
@@ -27,8 +27,10 @@ class Brick(pygame.Rect):
         color = BLACK
         if self.hp == math.inf:
             color = BLUE
-        elif self.hp > 0:
+        elif self.hp > 0 and self.hp <= len(DEFAULT_COLORS):
             color = DEFAULT_COLORS[self.hp-1]
+        elif self.hp > len(DEFAULT_COLORS):
+            color = WHITE
 
         pygame.draw.rect(screen, color, self)
 
@@ -80,3 +82,24 @@ class Ball:
 
     def rebound_horizontal(self):
         self.vx = -self.vx
+
+def generation_bricks(number_row):
+    bricks = []
+    rows = number_row +1
+    col = int((WIDTH - 100) / 50)+1
+    for h in range(1, rows):
+        # remplissage des briques
+        height = 30 * h
+        for w in range(1, col):
+            width = 50 * w
+            bricks.append(Brick(width, height, 40, 20, rows-h))
+
+
+        # bricks.append(Brick(80, height, 40, 20, rows-i))
+        # bricks.append(Brick(130, height, 40, 20, rows-i))
+        # bricks.append(Brick(180, height, 40, 20, rows-i))
+        # bricks.append(Brick(230, height, 40, 20, rows-i))
+        # bricks.append(Brick(280, height, 40, 20, rows-i))
+        # bricks.append(Brick(330, height, 40, 20, rows-i))
+
+    return bricks
