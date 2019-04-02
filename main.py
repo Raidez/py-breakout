@@ -31,7 +31,7 @@ top_wall = Brick(0, 0, WIDTH, 10, math.inf)
 pad = Pad(150, 575, 100, 15, WHITE)
 ball = Ball(root.get_width() // 2, root.get_height() // 2, 10, WHITE, vy=-1.2, vx=-1.8)
 
-bricks = generation_bricks(2)
+bricks = generation_bricks(10)
 
 def update():
     global done, ball, bricks, no_bricks
