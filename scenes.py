@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import pygame, math, copy
+import pygame, math, copy, random
 from utils import *
 from pygame.locals import *
 
@@ -28,7 +28,9 @@ class GameScene(Scene):
         self.right_wall = Brick(width-10, 0, 10, height, math.inf)
 
         self.pad = Pad(150, 575, 100, 15, WHITE)
-        self._ball = Ball(width // 2, height // 2, 10, WHITE, vy=-1.2, vx=-1.8)
+        vx = random.randint(-300, 300) / 100
+        vy = random.randint(-300, 300) / 100
+        self._ball = Ball(width // 2, height // 2, 10, WHITE, vx=vx, vy=vy)
         self.ball = copy.deepcopy(self._ball)
 
         # génération des briques qui seront visible dans le tableau
@@ -59,8 +61,7 @@ class GameScene(Scene):
             brick = self.bricks[index]
             brick.hp -= 1
 
-            if brick.hp <= 0:
-                del self.bricks[index]
+        self.bricks = [brick for brick in self.bricks if brick.hp > 0]
 
         return False
 
