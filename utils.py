@@ -7,6 +7,7 @@ WIDTH = 400
 HEIGHT = 600
 
 BLACK = (0, 0, 0)
+GREY = (125, 125, 125)
 RED = (255, 0, 0)
 WHITE = (255,255,255)
 BLUE = (0, 0, 255)
@@ -27,12 +28,15 @@ class Brick(pygame.Rect):
         color = BLACK
         if self.hp == math.inf:
             color = BLUE
+            pygame.draw.rect(screen, color, self)
         elif self.hp > 0 and self.hp <= len(DEFAULT_COLORS):
             color = DEFAULT_COLORS[self.hp-1]
+            pygame.draw.rect(screen, color, self)
+            pygame.draw.rect(screen, GREY, self, 2)
         elif self.hp > len(DEFAULT_COLORS):
             color = WHITE
-
-        pygame.draw.rect(screen, color, self)
+            pygame.draw.rect(screen, color, self)
+            pygame.draw.rect(screen, GREY, self, 2)
 
 class Pad(pygame.Rect):
     def __init__(self, x, y, w, h, color):
@@ -86,20 +90,12 @@ class Ball:
 def generation_bricks(number_row):
     bricks = []
     rows = number_row +1
-    col = int((WIDTH - 100) / 50)+1
+    col = int((WIDTH) / 50)+1
     for h in range(1, rows):
         # remplissage des briques
-        height = 30 * h
+        height = 20 * h
         for w in range(1, col):
-            width = 50 * w
+            width = 40 * w
             bricks.append(Brick(width, height, 40, 20, rows-h))
-
-
-        # bricks.append(Brick(80, height, 40, 20, rows-i))
-        # bricks.append(Brick(130, height, 40, 20, rows-i))
-        # bricks.append(Brick(180, height, 40, 20, rows-i))
-        # bricks.append(Brick(230, height, 40, 20, rows-i))
-        # bricks.append(Brick(280, height, 40, 20, rows-i))
-        # bricks.append(Brick(330, height, 40, 20, rows-i))
 
     return bricks
