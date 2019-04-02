@@ -80,3 +80,19 @@ class Ball:
 
     def rebound_horizontal(self):
         self.vx = -self.vx
+
+def generation_bricks(number_row):
+    bricks = []
+    rows = number_row +1
+    for i in range(1, rows):
+        # remplissage des briques
+        height = 30 * i
+        bricks.append(Brick(30, height, 40, 20, rows + 1 -i))
+        bricks.append(Brick(80, height, 40, 20, rows + 1 -i))
+        bricks.append(Brick(130, height, 40, 20, rows + 1 -i))
+        bricks.append(Brick(180, height, 40, 20, rows + 1 -i))
+        bricks.append(Brick(230, height, 40, 20, rows + 1 -i))
+        bricks.append(Brick(280, height, 40, 20, rows + 1 -i))
+        bricks.append(Brick(330, height, 40, 20, rows + 1 -i))
+
+    return bricks

@@ -31,18 +31,7 @@ top_wall = Brick(0, 0, WIDTH, 10, math.inf)
 pad = Pad(150, 575, 100, 15, WHITE)
 ball = Ball(root.get_width() // 2, root.get_height() // 2, 10, WHITE, vy=-1.2, vx=-1.8)
 
-bricks = []
-number_row = 2
-for i in range(1, number_row):
-    # remplissage des briques
-    height = 30 * i
-    bricks.append(Brick(30, height, 40, 20, number_row + 1 -i))
-    # bricks.append(Brick(80, height, 40, 20, number_row + 1 -i))
-    # bricks.append(Brick(130, height, 40, 20, number_row + 1 -i))
-    # bricks.append(Brick(180, height, 40, 20, number_row + 1 -i))
-    # bricks.append(Brick(230, height, 40, 20, number_row + 1 -i))
-    # bricks.append(Brick(280, height, 40, 20, number_row + 1 -i))
-    # bricks.append(Brick(330, height, 40, 20, number_row + 1 -i))
+bricks = generation_bricks(5)
 
 def update():
     global done, ball, bricks, no_bricks
