@@ -15,10 +15,10 @@ game = GameScene(WIDTH, HEIGHT)
 win = WinScene(WIDTH, HEIGHT)
 lose = LoseScene(WIDTH, HEIGHT)
 current = game
-done = False
 
 # définition des objets
 clock = pygame.time.Clock()
+done = False
 
 while not done:
     events = pygame.event.get()

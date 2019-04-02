@@ -16,6 +16,8 @@ YELLOW = (255,255,0)
 ORANGE = (255,165,0)
 PINK = (255,20,147)
 
+# couleurs par défaut de la coloration selon les PV d'une brique
+# VERT -> 1 PV; ROUGE -> max PV
 DEFAULT_COLORS = (GREEN, ORANGE, PINK, YELLOW, BLUE, RED)
 
 class Brick(pygame.Rect):
@@ -25,6 +27,8 @@ class Brick(pygame.Rect):
         self.hp = hp
 
     def draw(self, screen):
+        """la couleur de la brique dépend de ses points de vie
+        (exception pour les murs)"""
         color = BLACK
         if self.hp == math.inf:
             color = BLUE
@@ -48,7 +52,7 @@ class Pad(pygame.Rect):
 
 class Ball:
     def __init__(self, cx, cy, radius, color, vx=1.0, vy=1.0, speed=1.0):
-        self.hitbox = pygame.Rect(cx, cy, radius, radius)
+        self.hitbox = pygame.Rect((cx - radius), (cy - radius), radius*2, radius*2)
         self.cx = cx
         self.cy = cy
         self.radius = radius
@@ -61,13 +65,10 @@ class Ball:
         # déplacer la balle et sa hitbox à sa nouvelle position
         self.cx += self.vx * self.speed
         self.cy += self.vy * self.speed
-        self.hitbox.x = int(self.cx)
-        self.hitbox.y = int(self.cy)
+        self.hitbox.x = int(self.cx - self.radius)
+        self.hitbox.y = int(self.cy - self.radius)
 
-        # faire rebondir la balle contre les murs
-        # if len(self.collide_list((left_wall, right_wall))) > 0:
-        #     self.rebound_horizontal()
-
+        # faire rebondir la contre les murs
         if (self.cx - self.radius) < (left_wall.x + left_wall.w) or (self.cx + self.radius) >= right_wall.x:
             self.rebound_horizontal()
         if (self.cy - self.radius) < (top_wall.y + top_wall.h):
@@ -80,6 +81,7 @@ class Ball:
     def draw(self, screen):
         position = (int(self.cx), int(self.cy))
         pygame.draw.circle(screen, self.color, position, self.radius)
+        # pygame.draw.rect(screen, BLUE, self.hitbox) # DEBUG: affichage de la hitbox
 
     def rebound_vertical(self):
         self.vy = -self.vy
