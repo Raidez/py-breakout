@@ -56,9 +56,7 @@ class GameScene(Scene):
         self.ball.update(self.left_wall, self.top_wall, self.right_wall, self.pad)
 
         # on enlève 1 HP à chaque touche
-        listCollide = self.ball.hitbox.collidelistall(self.bricks)
-        cpt = 0
-        for index in  listCollide:
+        for index in self.ball.hitbox.collidelistall(self.bricks):
             self.ball.rebound_vertical()
             brick = self.bricks[index]
             brick.hp -= 1
