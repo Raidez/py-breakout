@@ -110,12 +110,18 @@ class LoseScene(Scene):
         self.text = font.render('Lose', True, WHITE, RED)
         self.music = pygame.mixer.Sound("fatality.ogg")
         self.once = True
+        self.restart = False
+
 
     def update(self, events):
         # vérifie si le son n'a pas déjà été joué
         if not pygame.mixer.get_busy() and self.once:
             self.music.play()
             self.once = False
+
+        for event in events:
+            if not self.restart and event.type == KEYUP and event.key == K_RETURN:
+                self.restart = True
 
     def draw(self):
         self.fill(RED)

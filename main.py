@@ -33,6 +33,9 @@ while not done:
         if game.ball.cy > (HEIGHT + 10):
             current = lose
 
+        if lose.restart:
+            current = game
+
         done = current.update(events)
         current.draw()
         root.blit(current, (0,0))
