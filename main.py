@@ -46,7 +46,7 @@ for i in range(1, number_row):
     bricks.append(Brick(330, height, 40, 20, color, number_row + 1 -i))
 
 def update():
-    global done, ball
+    global done, ball, bricks
 
     # gestion des événements (bouger la barre, quitter l'appli)
     for event in pygame.event.get():
@@ -69,7 +69,16 @@ def update():
     # gestion du mouvement de la balle
     ball.update(left_wall, top_wall, right_wall, pad)
 
+    # on enlève 1 HP à chaque touche
+    for index in ball.hitbox.collidelistall(bricks):
+        brick = bricks[index]
+        brick.hp -= 1
+
+        if brick.hp <= 0:
+            del bricks[index]
+
 def draw():
+    global bricks
     top_wall.draw(root)
     right_wall.draw(root)
     left_wall.draw(root)

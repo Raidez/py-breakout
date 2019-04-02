@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import pygame
+import pygame, math
 
 WIDTH = 400
 HEIGHT = 600
@@ -15,6 +15,7 @@ YELLOW = (255,255,0)
 ORANGE = (255,165,0)
 PINK = (255,20,147)
 
+DEFAULT_COLORS = (WHITE, GREEN, ORANGE, PINK, YELLOW, BLUE, RED)
 
 class Brick(pygame.Rect):
     def __init__(self, x, y, w, h, color, hp):
@@ -24,8 +25,13 @@ class Brick(pygame.Rect):
         self.hp = hp
 
     def draw(self, screen):
-        if self.hp > 0:
-            pygame.draw.rect(screen, self.color, self)
+        color = BLACK
+        if self.hp == math.inf:
+            color = BLUE
+        elif self.hp > 0:
+            color = DEFAULT_COLORS[self.hp-1]
+
+        pygame.draw.rect(screen, color, self)
 
 class Pad(pygame.Rect):
     def __init__(self, x, y, w, h, color):
@@ -45,15 +51,18 @@ class Ball:
         self.vx = vx
         self.vy = vy
         self.speed = speed
-
+    
     def update(self, left_wall, top_wall, right_wall, pad):
-        # deplacer la balle a sa nouvelle position
+        # déplacer la balle et sa hitbox à sa nouvelle position
         self.cx += self.vx * self.speed
         self.cy += self.vy * self.speed
         self.hitbox.x = int(self.cx)
         self.hitbox.y = int(self.cy)
 
         # faire rebondir la balle contre les murs
+        # if len(self.collide_list((left_wall, right_wall))) > 0:
+        #     self.rebound_horizontal()
+
         if (self.cx - self.radius) < (left_wall.x + left_wall.w) or (self.cx + self.radius) >= right_wall.x:
             self.rebound_horizontal()
         if (self.cy - self.radius) < (top_wall.y + top_wall.h):
