@@ -28,11 +28,7 @@ class GameScene(Scene):
         self.ball = Ball(width // 2, height // 2, 10, WHITE, vy=-1.2, vx=-1.8)
 
         self.bricks = []
-        number_row = 2
-        for i in range(1, number_row):
-            # remplissage des briques
-            height = 30 * i
-            self.bricks.append(Brick(30, height, 40, 20, number_row + 1 -i))
+        self.bricks = generation_bricks(2)
 
     def update(self, events):
         # gestion des événements (bouger la barre, quitter l'appli)
