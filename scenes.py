@@ -90,3 +90,17 @@ class WinScene(Scene):
         text_rect = self.text.get_rect()
         text_rect.center = (self.get_width() // 2, self.get_height() // 2)
         self.blit(self.text, text_rect)
+
+# initialisation de la scène de lose
+class LoseScene(Scene):
+    def __init__(self, width, height):
+        super().__init__(width, height)
+
+        font = pygame.font.Font('freesansbold.ttf', 32)
+        self.text = font.render('Lose', True, WHITE, RED)
+
+    def draw(self):
+        self.fill(RED)
+        text_rect = self.text.get_rect()
+        text_rect.center = (self.get_width() // 2, self.get_height() // 2)
+        self.blit(self.text, text_rect)

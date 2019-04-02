@@ -13,6 +13,7 @@ pygame.key.set_repeat(10, 10)
 # configuration des scènes
 game = GameScene(WIDTH, HEIGHT)
 win = WinScene(WIDTH, HEIGHT)
+lose = LoseScene(WIDTH, HEIGHT)
 current = game
 done = False
 
@@ -28,6 +29,9 @@ while not done:
         # s'il n'y a plus de briques alors victoire
         if len(game.bricks) == 0:
             current = win
+
+        if game.ball.cy > (HEIGHT + 10):
+            current = lose
 
         done = current.update(events)
         current.draw()
