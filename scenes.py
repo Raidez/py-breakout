@@ -31,8 +31,8 @@ class GameScene(Scene):
         self.pad = Pad((WIDTH/2 - 50), HEIGHT - 25, 100, 15, Color.WHITE)
         # self.pad = Pad(0, HEIGHT - 25, WIDTH, 15, Color.WHITE) # DEBUG: barre faisant toute la longueur de l'écran
 
-        vx = lambda: random.randint(-100, 100) / 100
-        vy = lambda: random.randint(-100, 100) / 100
+        vx = lambda: random.randint(-20, 20) / 100
+        vy = lambda: random.choice([-100, 100]) / 100
         self._ball = Ball(width // 2, height // 2, 10, Color.WHITE, vx=vx(), vy=vy(), speed=200.0) # conservation de la configuration initiale de la balle
         self.ball = copy.deepcopy(self._ball)
 
@@ -74,7 +74,10 @@ class GameScene(Scene):
             has_collide, collide_dir = self.ball.collide(brick, delta)
             if has_collide:
                 self.ball.rebound(has_collide, collide_dir)
+
                 brick.hp -= 1 # on enlève 1 HP à chaque touche
+                # if pygame.mixer.get_busy(): pygame.mixer.stop()
+                # self.coin_sound.play()
 
         ## déplacement effectif de la ball
         self.ball.update(delta)
@@ -102,7 +105,7 @@ class GameScene(Scene):
 class WinScene(Scene):
     def __init__(self, width, height):
         super().__init__(width, height)
-        self.music = pygame.mixer.Sound("ff_victory.ogg")
+        self.music = pygame.mixer.Sound("sound/ff_victory.ogg")
         font = pygame.font.Font('freesansbold.ttf', 32)
         self.text = font.render('Winner', True, Color.BLACK, Color.WHITE)
         self.once = True
@@ -123,7 +126,7 @@ class WinScene(Scene):
 class LoseScene(Scene):
     def __init__(self, width, height):
         super().__init__(width, height)
-        self.music = pygame.mixer.Sound("fatality.ogg")
+        self.music = pygame.mixer.Sound("sound/fatality.ogg")
         font = pygame.font.Font('freesansbold.ttf', 32)
         self.text = font.render('Lose', True, Color.WHITE, Color.RED)
         self.once = True
