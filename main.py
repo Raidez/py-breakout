@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import pygame
+import pygame, copy
 from pygame.locals import *
 from utils import *
 from scenes import *
@@ -37,7 +37,11 @@ while not done:
         # si la balle sort de l'écran alors game over
         if game.ball.cy > (HEIGHT + 10): current = lose
         # restart
-        if lose.restart: current = game
+        if lose.restart:
+            del game
+            game = GameScene(WIDTH, HEIGHT)
+            current = game
+            lose.restart = False
 
         # gestion des événements et dessin de la scène courante
         done = current.update(delta, events)

@@ -37,7 +37,7 @@ class GameScene(Scene):
         self.ball = copy.deepcopy(self._ball)
 
         # génération des briques qui seront visible dans le tableau
-        self.bricks = generation_bricks(3)
+        self.bricks = generation_bricks(6)
 
     def update(self, delta, events):
         # gestion des événements (bouger la barre, modifier la vitesse de la balle)

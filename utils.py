@@ -127,7 +127,7 @@ def generation_bricks(number_row: int = 1):
     """ Génère une liste de briques sur X lignes """
     bricks = []
     rows = number_row + 1
-    col = WIDTH // 50 + 1
+    col = WIDTH // 40 - 1
     for h in range(1, rows):
         y = 20 * h
         hp = rows - h
