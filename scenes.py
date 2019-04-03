@@ -58,7 +58,17 @@ class GameScene(Scene):
         for wall in self.walls:
             self.ball.rebound(*self.ball.collide(wall, delta))
 
-        self.ball.rebound(*self.ball.collide(self.pad, delta))
+        ## changement de l'angle selon l'endroit toucher sur la barre
+        has_collide, collide_dir = self.ball.collide(self.pad, delta)
+        if has_collide:
+            if "t" in collide_dir:
+                ### on calcule le pourcentage sur lequel la balle touche et on applique le complément pour obtenir le nouveau vecteur
+                percent = (self.ball.cx - self.pad.left) / (self.pad.right - self.pad.left)
+                vx = -1.0 + percent * 2
+                self.ball.vx = vx
+                self.ball.rebound_vertical()
+            else:
+                self.ball.rebound(has_collide, collide_dir)
 
         for brick in self.bricks:
             has_collide, collide_dir = self.ball.collide(brick, delta)
