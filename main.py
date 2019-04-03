@@ -41,6 +41,6 @@ while not done:
         root.blit(current, (0,0))
 
         pygame.display.update()
-        clock.tick(60) # permet de bloquer le framerate à 60 images par secondes
+        clock.tick(FPS_CAP) # permet de bloquer le framerate à 60 images par secondes
 
 pygame.quit()

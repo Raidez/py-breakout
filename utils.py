@@ -5,6 +5,7 @@ import pygame, math
 
 WIDTH = 400
 HEIGHT = 600
+FPS_CAP = 60
 
 BLACK = (0, 0, 0)
 GREY = (125, 125, 125)
@@ -19,6 +20,22 @@ PINK = (255,20,147)
 # couleurs par défaut de la coloration selon les PV d'une brique
 # VERT -> 1 PV; ROUGE -> max PV
 DEFAULT_COLORS = (GREEN, ORANGE, PINK, YELLOW, BLUE, RED)
+
+def draw_text(surface, text, size, color, x, y, align="nw"):
+    font_name = pygame.font.match_font('hack')
+    font = pygame.font.Font(font_name, size)
+    text_surface = font.render(text, True, color)
+    text_rect = text_surface.get_rect()
+    if align == "nw": text_rect.topleft = (x, y)
+    if align == "ne": text_rect.topright = (x, y)
+    if align == "sw": text_rect.bottomleft = (x, y)
+    if align == "se": text_rect.bottomright = (x, y)
+    if align == "n": text_rect.midtop = (x, y)
+    if align == "s": text_rect.midbottom = (x, y)
+    if align == "e": text_rect.midright = (x, y)
+    if align == "w": text_rect.midleft = (x, y)
+    if align == "center": text_rect.center = (x, y)
+    surface.blit(text_surface, text_rect)
 
 class Brick(pygame.Rect):
     def __init__(self, x, y, w, h, hp):
@@ -52,42 +69,77 @@ class Pad(pygame.Rect):
 
 class Ball:
     def __init__(self, cx, cy, radius, color, vx=1.0, vy=1.0, speed=1.0):
-        self.hitbox = pygame.Rect((cx - radius), (cy - radius), radius*2, radius*2)
-        self.cx = cx
-        self.cy = cy
+        # position hitbox
+        self.dx = cx
+        self.dy = cy
+
+        # position réelle (pixel)
+        self.cx = int(cx)
+        self.cy = int(cy)
+
         self.radius = radius
         self.color = color
         self.vx = vx
         self.vy = vy
         self.speed = speed
 
-    def update(self, left_wall, top_wall, right_wall, pad):
-        # déplacer la balle et sa hitbox à sa nouvelle position
-        self.cx += self.vx * self.speed
-        self.cy += self.vy * self.speed
-        self.hitbox.x = int(self.cx - self.radius)
-        self.hitbox.y = int(self.cy - self.radius)
+    def update(self):
+        # déplacer la hitbox à sa nouvelle position
+        self.dx +=  + self.vx * self.speed
+        self.dy += self.vy * self.speed
 
-        # faire rebondir la contre les murs
-        if (self.cx - self.radius) < (left_wall.x + left_wall.w) or (self.cx + self.radius) >= right_wall.x:
-            self.rebound_horizontal()
-        if (self.cy - self.radius) < (top_wall.y + top_wall.h):
-            self.rebound_vertical()
+    def move(self):
+        # déplacer la position de la balle en pixel
+        self.cx = int(self.dx)
+        self.cy = int(self.dy)
 
-        # faire rebondir la balle contre la barre
-        if self.hitbox.colliderect(pad):
-            self.rebound_vertical()
+    def collide(self, rect : pygame.Rect):
+        # récupérer la position de la balle par rapport à l'objet
+        collide_dir = ""
+        top = self.dx - self.radius
+        bottom = self.dy + self.radius
+        left = self.dx - self.radius
+        right = self.dx + self.radius
+
+        if bottom < rect.top: collide_dir = "t"
+        if top > rect.bottom: collide_dir = "b"
+        if left > rect.right: collide_dir += "r"
+        if right < rect.left: collide_dir += "l"
+
+        # simuler le déplacement de la balle
+        dx = self.dx + self.vx * self.speed
+        dy = self.dy + self.vy * self.speed
+        top = dy - self.radius
+        bottom = dy + self.radius
+        left = dx - self.radius
+        right = dx + self.radius
+
+        # vérifier s'il y'aura collision
+        has_collide = ""
+        if bottom < rect.top: has_collide = "t"
+        if top > rect.bottom: has_collide = "b"
+        if left > rect.right: has_collide += "r"
+        if right < rect.left: has_collide += "l"
+        has_collide = len(has_collide) == 0
+
+        return (has_collide, collide_dir)
 
     def draw(self, screen):
-        position = (int(self.cx), int(self.cy))
+        position = (self.cx, self.cy)
         pygame.draw.circle(screen, self.color, position, self.radius)
-        # pygame.draw.rect(screen, BLUE, self.hitbox) # DEBUG: affichage de la hitbox
 
     def rebound_vertical(self):
         self.vy = -self.vy
 
     def rebound_horizontal(self):
         self.vx = -self.vx
+
+    def rebound(self, has_collide, collide_dir):
+        if has_collide:
+            if 'l' in collide_dir or 'r' in collide_dir :
+                self.rebound_horizontal()
+            if 't' in collide_dir or 'b' in collide_dir :
+                self.rebound_vertical()
 
 def generation_bricks(number_row):
     bricks = []

@@ -23,13 +23,14 @@ class GameScene(Scene):
         super().__init__(width, height)
 
         # création des murs (gauche, haut, droite) pour stopper la balle et la barre
-        self.left_wall = Brick(0, 0, 10, height, math.inf)
-        self.top_wall = Brick(0, 0, width, 10, math.inf)
-        self.right_wall = Brick(width-10, 0, 10, height, math.inf)
+        self.walls = []
+        self.walls.append(Brick(0, 0, 10, height, math.inf))
+        self.walls.append(Brick(0, 0, width, 10, math.inf))
+        self.walls.append(Brick(width-10, 0, 10, height, math.inf))
 
         self.pad = Pad((WIDTH/2 - 50), HEIGHT - 25, 100, 15, WHITE)
-        vx = random.randint(-300, 300) / 100
-        vy = random.randint(-300, 300) / 100
+        vx = random.randint(-100, 100) / 100
+        vy = random.randint(-100, 100) / 100
         self._ball = Ball(width // 2, height // 2, 10, WHITE, vx=vx, vy=vy)
         self.ball = copy.deepcopy(self._ball)
 
@@ -41,9 +42,9 @@ class GameScene(Scene):
         # gestion des événements (bouger la barre, modifier la vitesse de la balle)
         for event in events:
             if event.type == KEYDOWN:
-                if event.key == K_RIGHT and self.pad.x < self.right_wall.x - self.pad.w:
+                if event.key == K_RIGHT and self.pad.x < self.walls[2].x - self.pad.w:
                     self.pad.x += 5
-                if event.key == K_LEFT and self.pad.x > self.left_wall.w:
+                if event.key == K_LEFT and self.pad.x > self.walls[0].w:
                     self.pad.x -= 5
                 if event.key == K_UP:
                     self.ball.speed += 0.2
@@ -53,14 +54,23 @@ class GameScene(Scene):
                 self.ball = copy.deepcopy(self._ball) # reset de la balle
 
         # gestion du mouvement de la balle
-        self.ball.update(self.left_wall, self.top_wall, self.right_wall, self.pad)
+        ## vérification collision (murs, barre et briques)
+        for wall in self.walls:
+            self.ball.rebound(*self.ball.collide(wall))
 
-        # on enlève 1 HP à chaque touche
-        for index in self.ball.hitbox.collidelistall(self.bricks):
-            self.ball.rebound_vertical()
-            brick = self.bricks[index]
-            brick.hp -= 1
+        self.ball.rebound(*self.ball.collide(self.pad))
 
+        for brick in self.bricks:
+            has_collide, collide_dir = self.ball.collide(brick)
+            if has_collide:
+                self.ball.rebound(has_collide, collide_dir)
+                brick.hp -= 1 # on enlève 1 HP à chaque touche
+
+        ## déplacement effectif de la ball
+        self.ball.update()
+        self.ball.move()
+
+        # on récupère les briques ayant encore des PV
         self.bricks = [brick for brick in self.bricks if brick.hp > 0]
 
         return False
@@ -68,9 +78,8 @@ class GameScene(Scene):
     def draw(self):
         self.fill(BLACK)
 
-        self.top_wall.draw(self)
-        self.right_wall.draw(self)
-        self.left_wall.draw(self)
+        for wall in self.walls:
+            wall.draw(self)
 
         self.pad.draw(self)
         self.ball.draw(self)
