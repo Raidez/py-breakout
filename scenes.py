@@ -11,7 +11,7 @@ class Scene(pygame.Surface):
     def __init__(self, width, height):
         super().__init__((width, height))
 
-    def update(self, events):
+    def update(self, delta, events):
         return False
 
     def draw(self):
@@ -29,16 +29,17 @@ class GameScene(Scene):
         self.walls.append(Brick(width-10, 0, 10, height, math.inf))
 
         self.pad = Pad((WIDTH/2 - 50), HEIGHT - 25, 100, 15, WHITE)
+        # self.pad = Pad(0, HEIGHT - 25, WIDTH, 15, WHITE)
         vx = random.randint(-100, 100) / 100
         vy = random.randint(-100, 100) / 100
-        self._ball = Ball(width // 2, height // 2, 10, WHITE, vx=vx, vy=vy)
+        self._ball = Ball(width // 2, height // 2, 10, WHITE, vx=vx, vy=vy, speed=200.0)
         self.ball = copy.deepcopy(self._ball)
 
         # génération des briques qui seront visible dans le tableau
         self.bricks = []
-        self.bricks = generation_bricks(12)
+        self.bricks = generation_bricks(3)
 
-    def update(self, events):
+    def update(self, delta, events):
         # gestion des événements (bouger la barre, modifier la vitesse de la balle)
         for event in events:
             if event.type == KEYDOWN:
@@ -47,27 +48,27 @@ class GameScene(Scene):
                 if event.key == K_LEFT and self.pad.x > self.walls[0].w:
                     self.pad.x -= 5
                 if event.key == K_UP:
-                    self.ball.speed += 0.2
+                    self.ball.speed += 10.0
                 if event.key == K_DOWN:
-                    self.ball.speed -= 0.2
+                    self.ball.speed -= 10.0
             if event.type == KEYUP and event.key == K_r:
                 self.ball = copy.deepcopy(self._ball) # reset de la balle
 
         # gestion du mouvement de la balle
         ## vérification collision (murs, barre et briques)
         for wall in self.walls:
-            self.ball.rebound(*self.ball.collide(wall))
+            self.ball.rebound(*self.ball.collide(wall, delta))
 
-        self.ball.rebound(*self.ball.collide(self.pad))
+        self.ball.rebound(*self.ball.collide(self.pad, delta))
 
         for brick in self.bricks:
-            has_collide, collide_dir = self.ball.collide(brick)
+            has_collide, collide_dir = self.ball.collide(brick, delta)
             if has_collide:
                 self.ball.rebound(has_collide, collide_dir)
                 brick.hp -= 1 # on enlève 1 HP à chaque touche
 
         ## déplacement effectif de la ball
-        self.ball.update()
+        self.ball.update(delta)
         self.ball.move()
 
         # on récupère les briques ayant encore des PV
@@ -98,7 +99,7 @@ class WinScene(Scene):
         self.music = pygame.mixer.Sound("ff_victory.ogg")
         self.once = True
 
-    def update(self, events):
+    def update(self, delta, events):
         # vérifie si le son n'a pas déjà été joué
         if not pygame.mixer.get_busy() and self.once:
             self.music.play()
@@ -122,7 +123,7 @@ class LoseScene(Scene):
         self.restart = False
 
 
-    def update(self, events):
+    def update(self, delta, events):
         # vérifie si le son n'a pas déjà été joué
         if not pygame.mixer.get_busy() and self.once:
             self.music.play()

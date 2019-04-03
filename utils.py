@@ -83,43 +83,43 @@ class Ball:
         self.vy = vy
         self.speed = speed
 
-    def update(self):
+    def update(self, delta):
         # déplacer la hitbox à sa nouvelle position
-        self.dx +=  + self.vx * self.speed
-        self.dy += self.vy * self.speed
+        self.dx += self.vx * self.speed * delta
+        self.dy += self.vy * self.speed * delta
 
     def move(self):
         # déplacer la position de la balle en pixel
         self.cx = int(self.dx)
         self.cy = int(self.dy)
 
-    def collide(self, rect : pygame.Rect):
+    def collide(self, rect : pygame.Rect, delta : float):
         # récupérer la position de la balle par rapport à l'objet
-        collide_dir = ""
-        top = self.dx - self.radius
-        bottom = self.dy + self.radius
-        left = self.dx - self.radius
-        right = self.dx + self.radius
+        left = self.cx - self.radius
+        top = self.cy - self.radius
+        right = self.cx + self.radius
+        bottom = self.cy + self.radius
 
-        if bottom < rect.top: collide_dir = "t"
-        if top > rect.bottom: collide_dir = "b"
-        if left > rect.right: collide_dir += "r"
-        if right < rect.left: collide_dir += "l"
+        collide_dir = ""
+        if bottom <= rect.top: collide_dir = "t"
+        if top >= rect.bottom: collide_dir = "b"
+        if left >= rect.right: collide_dir += "r"
+        if right <= rect.left: collide_dir += "l"
 
         # simuler le déplacement de la balle
-        dx = self.dx + self.vx * self.speed
-        dy = self.dy + self.vy * self.speed
-        top = dy - self.radius
-        bottom = dy + self.radius
+        dx = self.dx + self.vx * self.speed * delta
+        dy = self.dy + self.vy * self.speed * delta
         left = dx - self.radius
+        top = dy - self.radius
         right = dx + self.radius
+        bottom = dy + self.radius
 
         # vérifier s'il y'aura collision
         has_collide = ""
-        if bottom < rect.top: has_collide = "t"
-        if top > rect.bottom: has_collide = "b"
-        if left > rect.right: has_collide += "r"
-        if right < rect.left: has_collide += "l"
+        if bottom <= rect.top: has_collide = "t"
+        if top >= rect.bottom: has_collide = "b"
+        if left >= rect.right: has_collide += "r"
+        if right <= rect.left: has_collide += "l"
         has_collide = len(has_collide) == 0
 
         return (has_collide, collide_dir)
@@ -135,7 +135,7 @@ class Ball:
         self.vx = -self.vx
 
     def rebound(self, has_collide, collide_dir):
-        if has_collide:
+        if has_collide and len(collide_dir):
             if 'l' in collide_dir or 'r' in collide_dir :
                 self.rebound_horizontal()
             if 't' in collide_dir or 'b' in collide_dir :

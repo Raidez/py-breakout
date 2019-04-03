@@ -21,6 +21,7 @@ clock = pygame.time.Clock()
 done = False
 
 while not done:
+    delta = clock.tick(FPS_CAP) / 1000.0 # permet de bloquer le framerate à 60 images par secondes
     events = pygame.event.get()
     for event in events:
         if event.type == QUIT: done = True
@@ -36,11 +37,10 @@ while not done:
         if lose.restart:
             current = game
 
-        done = current.update(events)
+        done = current.update(delta, events)
         current.draw()
         root.blit(current, (0,0))
 
         pygame.display.update()
-        clock.tick(FPS_CAP) # permet de bloquer le framerate à 60 images par secondes
 
 pygame.quit()
