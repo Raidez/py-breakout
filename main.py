@@ -42,6 +42,14 @@ while not done:
             game = GameScene(WIDTH, HEIGHT)
             current = game
             lose.restart = False
+            lose.once = True
+
+        if win.restart:
+            del game
+            game = GameScene(WIDTH, HEIGHT)
+            current = game
+            win.restart = False
+            win.once = True
 
         # gestion des événements et dessin de la scène courante
         done = current.update(delta, events)

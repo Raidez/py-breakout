@@ -37,7 +37,7 @@ class GameScene(Scene):
         self.ball = copy.deepcopy(self._ball)
 
         # génération des briques qui seront visible dans le tableau
-        self.bricks = generation_bricks(6)
+        self.bricks = generation_bricks(1)
 
     def update(self, delta, events):
         # gestion des événements (bouger la barre, modifier la vitesse de la balle)
@@ -109,12 +109,17 @@ class WinScene(Scene):
         font = pygame.font.Font('freesansbold.ttf', 32)
         self.text = font.render('Winner', True, Color.BLACK, Color.WHITE)
         self.once = True
+        self.restart = False
 
     def update(self, delta, events):
         # vérifie si le son n'a pas déjà été joué
         if not pygame.mixer.get_busy() and self.once:
             self.music.play()
             self.once = False
+
+        for event in events:
+            if not self.restart and event.type == KEYUP and event.key == K_RETURN:
+                self.restart = True
 
     def draw(self):
         self.fill(Color.WHITE)
