@@ -7,68 +7,50 @@ WIDTH = 400
 HEIGHT = 600
 FPS_CAP = 60
 
-BLACK = (0, 0, 0)
-GREY = (125, 125, 125)
-RED = (255, 0, 0)
-WHITE = (255,255,255)
-BLUE = (0, 0, 255)
-GREEN = (0, 255, 0)
-YELLOW = (255,255,0)
-ORANGE = (255,165,0)
-PINK = (255,20,147)
+class Color:
+    BLACK = (0, 0, 0)
+    GREY = (125, 125, 125)
+    RED = (255, 0, 0)
+    WHITE = (255,255,255)
+    BLUE = (0, 0, 255)
+    GREEN = (0, 255, 0)
+    YELLOW = (255,255,0)
+    ORANGE = (255,165,0)
+    PINK = (255,20,147)
 
 # couleurs par défaut de la coloration selon les PV d'une brique
 # VERT -> 1 PV; ROUGE -> max PV
-DEFAULT_COLORS = (GREEN, ORANGE, PINK, YELLOW, BLUE, RED)
-
-def draw_text(surface, text, size, color, x, y, align="nw"):
-    font_name = pygame.font.match_font('hack')
-    font = pygame.font.Font(font_name, size)
-    text_surface = font.render(text, True, color)
-    text_rect = text_surface.get_rect()
-    if align == "nw": text_rect.topleft = (x, y)
-    if align == "ne": text_rect.topright = (x, y)
-    if align == "sw": text_rect.bottomleft = (x, y)
-    if align == "se": text_rect.bottomright = (x, y)
-    if align == "n": text_rect.midtop = (x, y)
-    if align == "s": text_rect.midbottom = (x, y)
-    if align == "e": text_rect.midright = (x, y)
-    if align == "w": text_rect.midleft = (x, y)
-    if align == "center": text_rect.center = (x, y)
-    surface.blit(text_surface, text_rect)
+DEFAULT_COLORS = (Color.GREEN, Color.ORANGE, Color.PINK, Color.YELLOW, Color.BLUE, Color.RED)
 
 class Brick(pygame.Rect):
-    def __init__(self, x, y, w, h, hp):
+    def __init__(self, x: int, y: int, w: int, h: int, hp: int):
         super().__init__(x, y, w, h)
         self.hpMax = hp
         self.hp = hp
 
-    def draw(self, screen):
+    def draw(self, surface: pygame.Surface):
         """la couleur de la brique dépend de ses points de vie
         (exception pour les murs)"""
-        color = BLACK
+        color = Color.WHITE
         if self.hp == math.inf:
-            color = BLUE
-            pygame.draw.rect(screen, color, self)
-        elif self.hp > 0 and self.hp <= len(DEFAULT_COLORS):
-            color = DEFAULT_COLORS[self.hp-1]
-            pygame.draw.rect(screen, color, self)
-            pygame.draw.rect(screen, GREY, self, 2)
-        elif self.hp > len(DEFAULT_COLORS):
-            color = WHITE
-            pygame.draw.rect(screen, color, self)
-            pygame.draw.rect(screen, GREY, self, 2)
+            pygame.draw.rect(surface, Color.BLUE, self)
+        else:
+            if self.hp > 0 and self.hp <= len(DEFAULT_COLORS):
+                color = DEFAULT_COLORS[self.hp-1]
+
+            pygame.draw.rect(surface, color, self)
+            pygame.draw.rect(surface, Color.GREY, self, 2)
 
 class Pad(pygame.Rect):
-    def __init__(self, x, y, w, h, color):
+    def __init__(self, x: int, y: int, w: int, h: int, color: Color):
         super().__init__(x, y, w, h)
         self.color = color
 
-    def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self)
+    def draw(self, surface : pygame.Surface):
+        pygame.draw.rect(surface, self.color, self)
 
 class Ball:
-    def __init__(self, cx, cy, radius, color, vx=1.0, vy=1.0, speed=1.0):
+    def __init__(self, cx: int, cy: int, radius: int, color: Color, vx: int = 1.0, vy: int = 1.0, speed: int = 1.0):
         # position hitbox
         self.dx = cx
         self.dy = cy
@@ -83,7 +65,7 @@ class Ball:
         self.vy = vy
         self.speed = speed
 
-    def update(self, delta):
+    def update(self, delta: float):
         # déplacer la hitbox à sa nouvelle position
         self.dx += self.vx * self.speed * delta
         self.dy += self.vy * self.speed * delta
@@ -93,7 +75,7 @@ class Ball:
         self.cx = int(self.dx)
         self.cy = int(self.dy)
 
-    def collide(self, rect : pygame.Rect, delta : float):
+    def collide(self, rect: pygame.Rect, delta: float):
         # récupérer la position de la balle par rapport à l'objet
         left = self.cx - self.radius
         top = self.cy - self.radius
@@ -114,7 +96,7 @@ class Ball:
         right = dx + self.radius
         bottom = dy + self.radius
 
-        # vérifier s'il y'aura collision
+        # prévoir s'il y'aura une collision
         has_collide = ""
         if bottom <= rect.top: has_collide = "t"
         if top >= rect.bottom: has_collide = "b"
@@ -124,9 +106,9 @@ class Ball:
 
         return (has_collide, collide_dir)
 
-    def draw(self, screen):
+    def draw(self, surface: pygame.Surface):
         position = (self.cx, self.cy)
-        pygame.draw.circle(screen, self.color, position, self.radius)
+        pygame.draw.circle(surface, self.color, position, self.radius)
 
     def rebound_vertical(self):
         self.vy = -self.vy
@@ -134,22 +116,23 @@ class Ball:
     def rebound_horizontal(self):
         self.vx = -self.vx
 
-    def rebound(self, has_collide, collide_dir):
+    def rebound(self, has_collide: bool, collide_dir: str):
         if has_collide and len(collide_dir):
             if 'l' in collide_dir or 'r' in collide_dir :
                 self.rebound_horizontal()
             if 't' in collide_dir or 'b' in collide_dir :
                 self.rebound_vertical()
 
-def generation_bricks(number_row):
+def generation_bricks(number_row: int = 1):
+    """ Génère une liste de briques sur X lignes """
     bricks = []
-    rows = number_row +1
-    col = int((WIDTH) / 50)+1
+    rows = number_row + 1
+    col = WIDTH // 50 + 1
     for h in range(1, rows):
-        # remplissage des briques
-        height = 20 * h
+        y = 20 * h
+        hp = rows - h
         for w in range(1, col):
-            width = 40 * w
-            bricks.append(Brick(width, height, 40, 20, rows-h))
+            x = 40 * w
+            bricks.append(Brick(x, y, 40, 20, hp))
 
     return bricks

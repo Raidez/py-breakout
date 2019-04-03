@@ -2,16 +2,16 @@
 # -*- coding: utf-8 -*-
 
 import pygame, math, copy, random
-from utils import *
 from pygame.locals import *
+from utils import *
 
 class Scene(pygame.Surface):
     """ Permet de gérer l'affichage et l'interaction d'éléments dans un seul objet.
-    La fonction 'update' renvoi un boolèen indiquant si le traitement doit s'arrêter"""
-    def __init__(self, width, height):
+    La fonction 'update' renvoi un boolèen indiquant si le traitement doit s'arrêter """
+    def __init__(self, width: int, height: int):
         super().__init__((width, height))
 
-    def update(self, delta, events):
+    def update(self, delta: float, events: list) -> bool:
         return False
 
     def draw(self):
@@ -28,29 +28,28 @@ class GameScene(Scene):
         self.walls.append(Brick(0, 0, width, 10, math.inf))
         self.walls.append(Brick(width-10, 0, 10, height, math.inf))
 
-        self.pad = Pad((WIDTH/2 - 50), HEIGHT - 25, 100, 15, WHITE)
-        # self.pad = Pad(0, HEIGHT - 25, WIDTH, 15, WHITE)
-        vx = random.randint(-100, 100) / 100
-        vy = random.randint(-100, 100) / 100
-        self._ball = Ball(width // 2, height // 2, 10, WHITE, vx=vx, vy=vy, speed=200.0)
+        self.pad = Pad((WIDTH/2 - 50), HEIGHT - 25, 100, 15, Color.WHITE)
+        # self.pad = Pad(0, HEIGHT - 25, WIDTH, 15, Color.WHITE) # DEBUG: barre faisant toute la longueur de l'écran
+
+        vx = lambda: random.randint(-100, 100) / 100
+        vy = lambda: random.randint(-100, 100) / 100
+        self._ball = Ball(width // 2, height // 2, 10, Color.WHITE, vx=vx(), vy=vy(), speed=200.0) # conservation de la configuration initiale de la balle
         self.ball = copy.deepcopy(self._ball)
 
         # génération des briques qui seront visible dans le tableau
-        self.bricks = []
         self.bricks = generation_bricks(3)
 
     def update(self, delta, events):
         # gestion des événements (bouger la barre, modifier la vitesse de la balle)
         for event in events:
             if event.type == KEYDOWN:
-                if event.key == K_RIGHT and self.pad.x < self.walls[2].x - self.pad.w:
-                    self.pad.x += 5
-                if event.key == K_LEFT and self.pad.x > self.walls[0].w:
-                    self.pad.x -= 5
-                if event.key == K_UP:
-                    self.ball.speed += 10.0
-                if event.key == K_DOWN:
-                    self.ball.speed -= 10.0
+                ## blocage de la barre sur le mur de gauche et de droite
+                if event.key == K_RIGHT and self.pad.x < self.walls[2].x - self.pad.w: self.pad.x += 5
+                if event.key == K_LEFT and self.pad.x > self.walls[0].w: self.pad.x -= 5
+
+                ## contrôle de l'accélération de la balle
+                if event.key == K_UP: self.ball.speed += 10.0
+                if event.key == K_DOWN: self.ball.speed -= 10.0
             if event.type == KEYUP and event.key == K_r:
                 self.ball = copy.deepcopy(self._ball) # reset de la balle
 
@@ -77,26 +76,25 @@ class GameScene(Scene):
         return False
 
     def draw(self):
-        self.fill(BLACK)
+        self.fill(Color.BLACK)
 
         for wall in self.walls:
             wall.draw(self)
-
-        self.pad.draw(self)
-        self.ball.draw(self)
-
         for brick in self.bricks:
             brick.draw(self)
+
+        # on dessine la balle et la barre en dernier pour voir s'il y'a un soucis (balle qui traverse un élément)
+        self.pad.draw(self)
+        self.ball.draw(self)
 
 
 # initialisation de la scène de victoire
 class WinScene(Scene):
     def __init__(self, width, height):
         super().__init__(width, height)
-
-        font = pygame.font.Font('freesansbold.ttf', 32)
-        self.text = font.render('Winner', True, BLACK, WHITE)
         self.music = pygame.mixer.Sound("ff_victory.ogg")
+        font = pygame.font.Font('freesansbold.ttf', 32)
+        self.text = font.render('Winner', True, Color.BLACK, Color.WHITE)
         self.once = True
 
     def update(self, delta, events):
@@ -106,7 +104,7 @@ class WinScene(Scene):
             self.once = False
 
     def draw(self):
-        self.fill(WHITE)
+        self.fill(Color.WHITE)
         text_rect = self.text.get_rect()
         text_rect.center = (self.get_width() // 2, self.get_height() // 2)
         self.blit(self.text, text_rect)
@@ -115,10 +113,9 @@ class WinScene(Scene):
 class LoseScene(Scene):
     def __init__(self, width, height):
         super().__init__(width, height)
-
-        font = pygame.font.Font('freesansbold.ttf', 32)
-        self.text = font.render('Lose', True, WHITE, RED)
         self.music = pygame.mixer.Sound("fatality.ogg")
+        font = pygame.font.Font('freesansbold.ttf', 32)
+        self.text = font.render('Lose', True, Color.WHITE, Color.RED)
         self.once = True
         self.restart = False
 
@@ -134,7 +131,7 @@ class LoseScene(Scene):
                 self.restart = True
 
     def draw(self):
-        self.fill(RED)
+        self.fill(Color.RED)
         text_rect = self.text.get_rect()
         text_rect.center = (self.get_width() // 2, self.get_height() // 2)
         self.blit(self.text, text_rect)

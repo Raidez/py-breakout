@@ -21,22 +21,25 @@ clock = pygame.time.Clock()
 done = False
 
 while not done:
-    delta = clock.tick(FPS_CAP) / 1000.0 # permet de bloquer le framerate à 60 images par secondes
+    # bloque le framerate à X ips
+    # delta correspond au temps écoulé en millisecondes depuis la dernière frame
+    delta = clock.tick(FPS_CAP) / 1000.0
+
+    # gestion de l'événement pour quitter l'application
+    # (ici pour ne pas avoir à le répéter dans chaque scène)
     events = pygame.event.get()
     for event in events:
         if event.type == QUIT: done = True
 
     if not done:
         # s'il n'y a plus de briques alors victoire
-        if len(game.bricks) == 0:
-            current = win
+        if len(game.bricks) == 0: current = win
+        # si la balle sort de l'écran alors game over
+        if game.ball.cy > (HEIGHT + 10): current = lose
+        # restart
+        if lose.restart: current = game
 
-        if game.ball.cy > (HEIGHT + 10):
-            current = lose
-
-        if lose.restart:
-            current = game
-
+        # gestion des événements et dessin de la scène courante
         done = current.update(delta, events)
         current.draw()
         root.blit(current, (0,0))
