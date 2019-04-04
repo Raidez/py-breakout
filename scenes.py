@@ -37,7 +37,7 @@ class GameScene(Scene):
         self.ball = copy.deepcopy(self._ball)
 
         # génération des briques qui seront visible dans le tableau
-        self.bricks = generation_bricks(1)
+        self.bricks = generation_bricks(4)
 
         self.score = 0
         self.font = pygame.font.Font('freesansbold.ttf', 20)
