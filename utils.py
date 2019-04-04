@@ -4,6 +4,7 @@
 import pygame, math
 
 WIDTH = 400
+HEIGHT_WINDOW = 650
 HEIGHT = 600
 FPS_CAP = 60
 

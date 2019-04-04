@@ -39,6 +39,10 @@ class GameScene(Scene):
         # génération des briques qui seront visible dans le tableau
         self.bricks = generation_bricks(1)
 
+        self.score = 0
+        self.font = pygame.font.Font('freesansbold.ttf', 20)
+        self.text = self.font.render(f'Score : {self.score}', True, Color.WHITE, Color.RED)
+
     def update(self, delta, events):
         # gestion des événements (bouger la barre, modifier la vitesse de la balle)
         for event in events:
@@ -51,6 +55,7 @@ class GameScene(Scene):
                 if event.key == K_UP: self.ball.speed += 10.0
                 if event.key == K_DOWN: self.ball.speed -= 10.0
             if event.type == KEYUP and event.key == K_r:
+                del self.ball
                 self.ball = copy.deepcopy(self._ball) # reset de la balle
 
         # gestion du mouvement de la balle
@@ -78,6 +83,7 @@ class GameScene(Scene):
                 brick.hp -= 1 # on enlève 1 HP à chaque touche
                 # if pygame.mixer.get_busy(): pygame.mixer.stop()
                 # self.coin_sound.play()
+                self.score += 10
 
         ## déplacement effectif de la ball
         self.ball.update(delta)
@@ -99,6 +105,8 @@ class GameScene(Scene):
         # on dessine la balle et la barre en dernier pour voir s'il y'a un soucis (balle qui traverse un élément)
         self.pad.draw(self)
         self.ball.draw(self)
+
+
 
 
 # initialisation de la scène de victoire
@@ -131,12 +139,15 @@ class WinScene(Scene):
 class LoseScene(Scene):
     def __init__(self, width, height):
         super().__init__(width, height)
+        self.lives = 3
         self.music = pygame.mixer.Sound("sound/fatality.ogg")
         font = pygame.font.Font('freesansbold.ttf', 32)
+        self.font2 = pygame.font.Font('freesansbold.ttf', 20)
         self.text = font.render('Lose', True, Color.WHITE, Color.RED)
+        self.text2 = self.font2.render(f'Remain lives : {self.lives}', True, Color.WHITE, Color.RED)
+        self.text3 = self.font2.render('Please exit the game', True, Color.WHITE, Color.RED)
         self.once = True
         self.restart = False
-
 
     def update(self, delta, events):
         # vérifie si le son n'a pas déjà été joué
@@ -151,5 +162,29 @@ class LoseScene(Scene):
     def draw(self):
         self.fill(Color.RED)
         text_rect = self.text.get_rect()
+        text_rect2 = self.text2.get_rect()
+        text_rect.center = (self.get_width() // 2, self.get_height() // 3)
+        text_rect2.center = (self.get_width() // 2, self.get_height() // 2)
+        self.blit(self.text, text_rect)
+        self.blit(self.text2, text_rect2)
+
+        if self.lives == 0:
+            text_rect3 = self.text3.get_rect()
+            text_rect3.center = (self.get_width() // 2, (self.get_height() // 3) * 2)
+            self.blit(self.text3, text_rect3)
+
+class ScoreScene(Scene):
+    def __init__(self, width, height, game_scene):
+        super().__init__(width, height)
+        self.font = pygame.font.Font('freesansbold.ttf', 20)
+        self.text = self.font.render(f'Score : {game_scene.score}', True, Color.WHITE, Color.BLACK)
+
+    def update_score(self, game_scene):
+        self.text = self.font.render(f'Score : {game_scene.score}', True, Color.WHITE, Color.BLACK)
+
+    def draw(self):
+        # self.fill(Color.RED)
+        text_rect = self.text.get_rect()
         text_rect.center = (self.get_width() // 2, self.get_height() // 2)
+        text_rect.fit(self.get_rect())
         self.blit(self.text, text_rect)
