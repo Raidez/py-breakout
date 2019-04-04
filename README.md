@@ -1,7 +1,8 @@
 # Guide d'installation :
 
-Les composants nécessaire au jeu : ```pygame et python3.7```
-Pour utiliser le jeu vous devez rentrer la commande : ```python3 ./main.py```
+Les composants nécessaires au jeu sont ```pygame et python3.7``` <br />
+Une fois Python installé, ouvrez un invité de commande puis entrez la commande ```pip install pygame``` pour installer la bibliothèque Pygame. <br />
+Pour utiliser le jeu vous devez ouvrir un invité de commande dans le dossier du jeu puis entrer la commande suivante ```python3 ./main.py``` 
 
 # Guide d'utilisation :
 
